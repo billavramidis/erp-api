@@ -2,6 +2,7 @@ package com.bavramidis.erp.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -21,6 +22,23 @@ public class GlobalExceptionHandler {
         response.put("timestamp", LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleMethodArgumentNotValidError(MethodArgumentNotValidException err){
+        Map<String, Object> response = new HashMap<>();
+        Map<String, String> invalidErrors = new HashMap<>();
+
+        err.getBindingResult().getFieldErrors().forEach(error ->
+                    invalidErrors.put(error.getField(), error.getDefaultMessage())
+                );
+
+        response.put("error", "Bad Request");
+        response.put("status", HttpStatus.BAD_REQUEST.value());
+        response.put("messages", invalidErrors);
+        response.put("timestamp", LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(Exception.class)

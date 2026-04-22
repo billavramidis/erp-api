@@ -3,6 +3,7 @@ package com.bavramidis.erp.product.controller;
 import com.bavramidis.erp.product.dto.ProductCreateDTO;
 import com.bavramidis.erp.product.dto.ProductResponseDTO;
 import com.bavramidis.erp.product.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,7 @@ public class ProductController {
     }
 
     @PostMapping()
-    public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody ProductCreateDTO dto) {
+    public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody @Valid ProductCreateDTO dto) {
         ProductResponseDTO response = productService.createProduct(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
