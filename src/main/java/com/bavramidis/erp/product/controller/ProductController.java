@@ -20,9 +20,9 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDTO> getProduct(@PathVariable UUID id) {
-        ProductResponseDTO response = productService.getProduct(id);
+    @GetMapping("/{productID}")
+    public ResponseEntity<ProductResponseDTO> getProduct(@PathVariable UUID productID) {
+        ProductResponseDTO response = productService.getProduct(productID);
 
         return ResponseEntity.ok(response);
     }
@@ -35,8 +35,16 @@ public class ProductController {
     }
 
     @PostMapping()
-    public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody @Valid ProductCreateDTO dto) {
-        ProductResponseDTO response = productService.createProduct(dto);
+    public ResponseEntity<ProductResponseDTO> createProductWithoutCategory(@RequestBody @Valid ProductCreateDTO dto) {
+        ProductResponseDTO response = productService.createProductWithoutCategory(dto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/{categoryID}")
+    public ResponseEntity<ProductResponseDTO> createProductWithCategory(@RequestBody @Valid ProductCreateDTO dto,
+                                                                        @PathVariable UUID categoryID) {
+        ProductResponseDTO response = productService.createProductWithCategory(dto, categoryID);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

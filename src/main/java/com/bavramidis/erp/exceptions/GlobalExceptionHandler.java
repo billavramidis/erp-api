@@ -16,7 +16,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleProductNotFoundError(ProductNotFoundException err){
         Map<String, Object> response = new HashMap<>();
 
-        response.put("error", "Resource Not Found");
+        response.put("error", "Product Not Found");
+        response.put("status", HttpStatus.NOT_FOUND.value());
+        response.put("message", err.getMessage());
+        response.put("timestamp", LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleCategoryNotFoundError(CategoryNotFoundException err){
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("error", "Category Not Found");
         response.put("status", HttpStatus.NOT_FOUND.value());
         response.put("message", err.getMessage());
         response.put("timestamp", LocalDateTime.now());
@@ -36,6 +48,18 @@ public class GlobalExceptionHandler {
         response.put("error", "Bad Request");
         response.put("status", HttpStatus.BAD_REQUEST.value());
         response.put("messages", invalidErrors);
+        response.put("timestamp", LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(CategoryValidationException.class)
+    public ResponseEntity<Map<String, Object>> handleCategoryError(CategoryValidationException err){
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("error", "Category Business Rule Violation");
+        response.put("status", HttpStatus.BAD_REQUEST.value());
+        response.put("message", err.getMessage());
         response.put("timestamp", LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
