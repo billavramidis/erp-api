@@ -1,5 +1,7 @@
 package com.bavramidis.erp.product.service;
 
+import com.bavramidis.erp.category.entity.Category;
+import com.bavramidis.erp.category.service.CategoryService;
 import com.bavramidis.erp.exceptions.ProductNotFoundException;
 import com.bavramidis.erp.product.dto.ProductCreateDTO;
 import com.bavramidis.erp.product.dto.ProductResponseDTO;
@@ -15,18 +17,20 @@ import java.util.UUID;
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    private final CategoryService categoryService;
     private final ProductMapper mapper;
 
-    public ProductService(ProductRepository productRepository, ProductMapper productMapper) {
+    public ProductService(ProductRepository productRepository, CategoryService categoryService, ProductMapper productMapper) {
         this.productRepository = productRepository;
+        this.categoryService = categoryService;
         this.mapper = productMapper;
     }
 
-    public ProductResponseDTO getProduct(UUID id) {
-        return productRepository.findById(id)
+    public ProductResponseDTO getProduct(UUID productID) {
+        return productRepository.findById(productID)
                 .map(mapper::toResponse)
                 .orElseThrow(() -> new ProductNotFoundException(
-                        "Couldn't find product with id: " + id));
+                        "Couldn't find product with id: " + productID));
     }
 
     public List<ProductResponseDTO> getAllProducts() {
@@ -37,10 +41,21 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductResponseDTO createProduct(ProductCreateDTO dto) {
-        //Add custom logic for SKU create and after save.
-        Product savedProduct = productRepository.save(mapper.toEntity(dto));
+    public ProductResponseDTO createProductWithCategory(ProductCreateDTO dto, UUID categoryID) {
+        return saveProduct(dto, categoryService.getCategoryEntity(categoryID));
+    }
 
+    @Transactional
+    public ProductResponseDTO createProductWithoutCategory(ProductCreateDTO dto) {
+        return saveProduct(dto, categoryService.getDefaultCategory());
+    }
+
+    private ProductResponseDTO saveProduct(ProductCreateDTO dto, Category category){
+        Product product = mapper.toEntity(dto);
+
+        product.setCategory(category);
+
+        Product savedProduct = productRepository.save(product);
         return mapper.toResponse(savedProduct);
     }
 }
