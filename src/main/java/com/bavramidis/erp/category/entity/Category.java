@@ -23,6 +23,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Setter(AccessLevel.NONE)
     @EqualsAndHashCode.Include
+    @Column(name = "categoryID", columnDefinition = "BINARY(16)")
     private UUID categoryID;
 
     @NonNull

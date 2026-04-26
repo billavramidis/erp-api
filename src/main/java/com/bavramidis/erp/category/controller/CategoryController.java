@@ -29,7 +29,7 @@ public class CategoryController {
 
     @GetMapping("/{categoryID}")
     public ResponseEntity<CategoryResponseDTO> getCategory(@PathVariable UUID categoryID){
-        CategoryResponseDTO response = categoryService.getCategoryResponse(categoryID);
+        CategoryResponseDTO response = categoryService.getCategory(categoryID);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
