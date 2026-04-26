@@ -15,7 +15,7 @@ import java.util.UUID;
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "product")
+@Table(name = "products")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @RequiredArgsConstructor
 public class Product {
@@ -44,14 +44,19 @@ public class Product {
     private String createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(
+            name = "category_id",
+            referencedColumnName = "categoryID",
+            nullable = false,
+            columnDefinition = "BINARY(16)"
+    )
     private Category category;
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now().toString(); // Or use a Formatter
+        this.createdAt = LocalDateTime.now().toString();
         if (this.sku == null) {
-            this.sku = (this.name.substring(0, 3).toUpperCase()) + "-" + System.currentTimeMillis();
+            this.sku = (this.name.substring(0, 3).toUpperCase()) + "-" + createdAt;
         }
     }
 }

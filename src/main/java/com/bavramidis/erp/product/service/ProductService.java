@@ -1,7 +1,9 @@
 package com.bavramidis.erp.product.service;
 
 import com.bavramidis.erp.category.entity.Category;
+import com.bavramidis.erp.category.repository.CategoryRepository;
 import com.bavramidis.erp.category.service.CategoryService;
+import com.bavramidis.erp.exceptions.CategoryNotFoundException;
 import com.bavramidis.erp.exceptions.ProductNotFoundException;
 import com.bavramidis.erp.product.dto.ProductCreateDTO;
 import com.bavramidis.erp.product.dto.ProductResponseDTO;
@@ -17,12 +19,12 @@ import java.util.UUID;
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
-    private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
     private final ProductMapper mapper;
 
-    public ProductService(ProductRepository productRepository, CategoryService categoryService, ProductMapper productMapper) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
-        this.categoryService = categoryService;
+        this.categoryRepository = categoryRepository;
         this.mapper = productMapper;
     }
 
@@ -42,12 +44,15 @@ public class ProductService {
 
     @Transactional
     public ProductResponseDTO createProductWithCategory(ProductCreateDTO dto, UUID categoryID) {
-        return saveProduct(dto, categoryService.getCategoryEntity(categoryID));
+        return saveProduct(dto, categoryRepository.findById(categoryID)
+                .orElseThrow(() -> new CategoryNotFoundException(
+                        "Couldn't find category with id: " + categoryID)));
     }
 
     @Transactional
     public ProductResponseDTO createProductWithoutCategory(ProductCreateDTO dto) {
-        return saveProduct(dto, categoryService.getDefaultCategory());
+        return saveProduct(dto, categoryRepository.findByNameIgnoreCase("General")
+                .orElseThrow(() -> new IllegalStateException("Critical Error: 'General' category missing.")));
     }
 
     private ProductResponseDTO saveProduct(ProductCreateDTO dto, Category category){

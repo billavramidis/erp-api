@@ -23,22 +23,11 @@ public class CategoryService {
         this.categoryMapper = categoryMapper;
     }
 
-    //Returns a DTO, to be used strictly in CategoryController.
-    public CategoryResponseDTO getCategoryResponse(UUID categoryID) {
-        return categoryMapper.toResponse(getCategoryEntity(categoryID));
-    }
-
-    //Returns a Category Entity, useful for other services.
-    public Category getCategoryEntity(UUID categoryID){
+    public CategoryResponseDTO getCategory(UUID categoryID){
         return categoryRepository.findById(categoryID)
+                .map(categoryMapper::toResponse)
                 .orElseThrow(() -> new CategoryNotFoundException(
                         "Couldn't find category with id: " + categoryID));
-    }
-
-    //Returns the Default Category Entity, useful for other services.
-    public Category getDefaultCategory() {
-        return categoryRepository.findByNameIgnoreCase("General")
-                .orElseThrow(() -> new IllegalStateException("Critical Error: 'General' category missing."));
     }
 
     public List<CategoryResponseDTO> getAllCategories() {
