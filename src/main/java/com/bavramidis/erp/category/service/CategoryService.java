@@ -5,8 +5,8 @@ import com.bavramidis.erp.category.dto.CategoryResponseDTO;
 import com.bavramidis.erp.category.entity.Category;
 import com.bavramidis.erp.category.mapper.CategoryMapper;
 import com.bavramidis.erp.category.repository.CategoryRepository;
-import com.bavramidis.erp.exceptions.CategoryNotFoundException;
-import com.bavramidis.erp.exceptions.CategoryValidationException;
+import com.bavramidis.erp.exceptions.category.CategoryNotFoundException;
+import com.bavramidis.erp.exceptions.category.CategoryValidationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +43,7 @@ public class CategoryService {
             throw new CategoryValidationException("The name General is reserved for system use.");
         }
 
-        Category savedCategory = categoryRepository.save(categoryMapper.toEntity(dto));
+        Category savedCategory = categoryRepository.save(categoryMapper.createDTOToEntity(dto));
         return categoryMapper.toResponse(savedCategory);
     }
 }

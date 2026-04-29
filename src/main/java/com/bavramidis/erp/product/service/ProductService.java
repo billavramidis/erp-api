@@ -2,9 +2,8 @@ package com.bavramidis.erp.product.service;
 
 import com.bavramidis.erp.category.entity.Category;
 import com.bavramidis.erp.category.repository.CategoryRepository;
-import com.bavramidis.erp.category.service.CategoryService;
-import com.bavramidis.erp.exceptions.CategoryNotFoundException;
-import com.bavramidis.erp.exceptions.ProductNotFoundException;
+import com.bavramidis.erp.exceptions.category.CategoryNotFoundException;
+import com.bavramidis.erp.exceptions.product.ProductNotFoundException;
 import com.bavramidis.erp.product.dto.ProductCreateDTO;
 import com.bavramidis.erp.product.dto.ProductResponseDTO;
 import com.bavramidis.erp.product.entity.Product;
@@ -20,17 +19,17 @@ import java.util.UUID;
 public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final ProductMapper mapper;
+    private final ProductMapper productMapper;
 
     public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
-        this.mapper = productMapper;
+        this.productMapper = productMapper;
     }
 
     public ProductResponseDTO getProduct(UUID productID) {
         return productRepository.findById(productID)
-                .map(mapper::toResponse)
+                .map(productMapper::toResponse)
                 .orElseThrow(() -> new ProductNotFoundException(
                         "Couldn't find product with id: " + productID));
     }
@@ -38,7 +37,7 @@ public class ProductService {
     public List<ProductResponseDTO> getAllProducts() {
         return productRepository.findAll()
                 .stream()
-                .map(mapper::toResponse)
+                .map(productMapper::toResponse)
                 .toList();
     }
 
@@ -56,11 +55,11 @@ public class ProductService {
     }
 
     private ProductResponseDTO saveProduct(ProductCreateDTO dto, Category category){
-        Product product = mapper.toEntity(dto);
+        Product product = productMapper.createDTOToEntity(dto);
 
         product.setCategory(category);
 
         Product savedProduct = productRepository.save(product);
-        return mapper.toResponse(savedProduct);
+        return productMapper.toResponse(savedProduct);
     }
 }

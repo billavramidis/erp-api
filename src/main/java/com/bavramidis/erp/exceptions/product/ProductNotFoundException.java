@@ -1,4 +1,4 @@
-package com.bavramidis.erp.exceptions;
+package com.bavramidis.erp.exceptions.product;
 
 public class ProductNotFoundException extends RuntimeException {
     public ProductNotFoundException(String message) {
