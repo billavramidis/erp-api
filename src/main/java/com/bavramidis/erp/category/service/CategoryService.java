@@ -5,8 +5,8 @@ import com.bavramidis.erp.category.dto.CategoryResponseDTO;
 import com.bavramidis.erp.category.entity.Category;
 import com.bavramidis.erp.category.mapper.CategoryMapper;
 import com.bavramidis.erp.category.repository.CategoryRepository;
-import com.bavramidis.erp.exceptions.CategoryNotFoundException;
-import com.bavramidis.erp.exceptions.CategoryValidationException;
+import com.bavramidis.erp.exceptions.category.CategoryNotFoundException;
+import com.bavramidis.erp.exceptions.category.CategoryValidationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

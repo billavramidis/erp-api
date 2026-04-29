@@ -1,5 +1,8 @@
 package com.bavramidis.erp.exceptions;
 
+import com.bavramidis.erp.exceptions.category.CategoryNotFoundException;
+import com.bavramidis.erp.exceptions.category.CategoryValidationException;
+import com.bavramidis.erp.exceptions.product.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

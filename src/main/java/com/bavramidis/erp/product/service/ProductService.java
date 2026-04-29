@@ -2,9 +2,8 @@ package com.bavramidis.erp.product.service;
 
 import com.bavramidis.erp.category.entity.Category;
 import com.bavramidis.erp.category.repository.CategoryRepository;
-import com.bavramidis.erp.category.service.CategoryService;
-import com.bavramidis.erp.exceptions.CategoryNotFoundException;
-import com.bavramidis.erp.exceptions.ProductNotFoundException;
+import com.bavramidis.erp.exceptions.category.CategoryNotFoundException;
+import com.bavramidis.erp.exceptions.product.ProductNotFoundException;
 import com.bavramidis.erp.product.dto.ProductCreateDTO;
 import com.bavramidis.erp.product.dto.ProductResponseDTO;
 import com.bavramidis.erp.product.entity.Product;
