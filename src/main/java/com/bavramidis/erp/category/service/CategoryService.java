@@ -43,7 +43,7 @@ public class CategoryService {
             throw new CategoryValidationException("The name General is reserved for system use.");
         }
 
-        Category savedCategory = categoryRepository.save(categoryMapper.toEntity(dto));
+        Category savedCategory = categoryRepository.save(categoryMapper.createDTOToEntity(dto));
         return categoryMapper.toResponse(savedCategory);
     }
 }
