@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -54,12 +55,31 @@ public class ProductService {
                 .orElseThrow(() -> new IllegalStateException("Critical Error: 'General' category missing.")));
     }
 
-    private ProductResponseDTO saveProduct(ProductCreateDTO dto, Category category){
+    private ProductResponseDTO saveProduct(ProductCreateDTO dto, Category category) {
         Product product = productMapper.createDTOToEntity(dto);
 
         product.setCategory(category);
 
         Product savedProduct = productRepository.save(product);
         return productMapper.toResponse(savedProduct);
+    }
+
+    @Transactional
+    public ProductResponseDTO updateProductCategory(UUID productID, UUID categoryID) {
+        Product product = productRepository.findById(productID)
+                .orElseThrow(() -> new ProductNotFoundException("Couldn't find product with id: " + productID));
+
+        Category category = categoryRepository.findById(categoryID)
+                .orElseThrow(() -> new CategoryNotFoundException("Couldn't find category with id: " + productID));
+
+        //If given the same category, it skips doing unnecessary db work.
+        if (product.getCategory().equals(category)) {
+            return productMapper.toResponse(productRepository.save(product));
+        }
+
+        product.setCategory(category);
+
+        Product updatedProduct = productRepository.save(product);
+        return productMapper.toResponse(updatedProduct);
     }
 }

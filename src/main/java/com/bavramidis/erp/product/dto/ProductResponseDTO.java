@@ -7,6 +7,7 @@ public record ProductResponseDTO(UUID productID,
                                  String name,
                                  BigDecimal price,
                                  String sku,
-                                 String description
+                                 String description,
+                                 String categoryName
 ) {
 }
