@@ -6,6 +6,7 @@ import com.bavramidis.erp.exceptions.category.CategoryNotFoundException;
 import com.bavramidis.erp.exceptions.product.ProductNotFoundException;
 import com.bavramidis.erp.product.dto.ProductCreateDTO;
 import com.bavramidis.erp.product.dto.ProductResponseDTO;
+import com.bavramidis.erp.product.dto.ProductUpdateDTO;
 import com.bavramidis.erp.product.entity.Product;
 import com.bavramidis.erp.product.mapper.ProductMapper;
 import com.bavramidis.erp.product.repository.ProductRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -29,7 +31,7 @@ public class ProductService {
 
     public ProductResponseDTO getProduct(UUID productID) {
         return productRepository.findById(productID)
-                .map(productMapper::toResponse)
+                .map(productMapper::createResponse)
                 .orElseThrow(() -> new ProductNotFoundException(
                         "Couldn't find product with id: " + productID));
     }
@@ -37,7 +39,7 @@ public class ProductService {
     public List<ProductResponseDTO> getAllProducts() {
         return productRepository.findAll()
                 .stream()
-                .map(productMapper::toResponse)
+                .map(productMapper::createResponse)
                 .toList();
     }
 
@@ -54,12 +56,47 @@ public class ProductService {
                 .orElseThrow(() -> new IllegalStateException("Critical Error: 'General' category missing.")));
     }
 
-    private ProductResponseDTO saveProduct(ProductCreateDTO dto, Category category){
-        Product product = productMapper.createDTOToEntity(dto);
+    private ProductResponseDTO saveProduct(ProductCreateDTO dto, Category category) {
+        Product product = productMapper.createEntity(dto);
 
         product.setCategory(category);
 
         Product savedProduct = productRepository.save(product);
-        return productMapper.toResponse(savedProduct);
+        return productMapper.createResponse(savedProduct);
+    }
+
+    @Transactional
+    public ProductResponseDTO updateProductCategory(UUID productID, UUID categoryID) {
+        Product product = productRepository.findById(productID)
+                .orElseThrow(() -> new ProductNotFoundException("Couldn't find product with id: " + productID));
+
+        //Prevents crashing if null is given.
+        Optional.ofNullable(categoryID)
+                .filter(id -> !id.equals(product.getCategory().getCategoryID()))
+                .map(id -> categoryRepository.findById(id)
+                        .orElseThrow(() -> new CategoryNotFoundException("ID: " + id)))
+                .ifPresent(product::setCategory);
+
+        Product updatedProduct = productRepository.save(product);
+        return productMapper.createResponse(updatedProduct);
+    }
+
+    @Transactional
+    public ProductResponseDTO updateProduct(UUID productID, ProductUpdateDTO dto) {
+        Product product = productRepository.findById(productID)
+                .orElseThrow(() -> new ProductNotFoundException("Couldn't find product with id: " + productID));
+
+        productMapper.updateEntity(product, dto);
+
+        //Generated through AI to my specifications. Took me like an hour to find a solution I was content with.
+        //Stops execution if the categoryID given was null and afterwards if it's a different category it updates the product.
+        Optional.ofNullable(dto.categoryID())
+                .filter(id -> !id.equals(product.getCategory().getCategoryID()))
+                .map(id -> categoryRepository.findById(id)
+                        .orElseThrow(() -> new CategoryNotFoundException("ID: " + id)))
+                .ifPresent(product::setCategory);
+
+        Product updatedProduct = productRepository.save(product);
+        return productMapper.createResponse(updatedProduct);
     }
 }

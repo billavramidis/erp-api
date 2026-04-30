@@ -9,9 +9,12 @@ import java.math.BigDecimal;
 public record ProductCreateDTO(
         @NotBlank(message = "The name of the product may not be blank.")
         String name,
+
         @NotNull(message = "The price cannot contain a null value.")
         @Positive(message = "The price should be a positive number.")
         BigDecimal price,
+
+        @NotNull
         String description) {
 }
 
