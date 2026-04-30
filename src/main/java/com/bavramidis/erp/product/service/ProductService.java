@@ -66,22 +66,6 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductResponseDTO updateProductCategory(UUID productID, UUID categoryID) {
-        Product product = productRepository.findById(productID)
-                .orElseThrow(() -> new ProductNotFoundException("Couldn't find product with id: " + productID));
-
-        //Prevents crashing if null is given.
-        Optional.ofNullable(categoryID)
-                .filter(id -> !id.equals(product.getCategory().getCategoryID()))
-                .map(id -> categoryRepository.findById(id)
-                        .orElseThrow(() -> new CategoryNotFoundException("ID: " + id)))
-                .ifPresent(product::setCategory);
-
-        Product updatedProduct = productRepository.save(product);
-        return productMapper.createResponse(updatedProduct);
-    }
-
-    @Transactional
     public ProductResponseDTO updateProduct(UUID productID, ProductUpdateDTO dto) {
         Product product = productRepository.findById(productID)
                 .orElseThrow(() -> new ProductNotFoundException("Couldn't find product with id: " + productID));

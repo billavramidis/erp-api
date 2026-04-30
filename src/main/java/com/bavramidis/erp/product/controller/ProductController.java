@@ -50,14 +50,6 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PatchMapping("/{productID}")
-    public ResponseEntity<ProductResponseDTO> updateProductCategory(@PathVariable UUID productID,
-                                                                    @RequestBody UUID categoryID) {
-        ProductResponseDTO response = productService.updateProductCategory(productID, categoryID);
-
-        return ResponseEntity.ok(response);
-    }
-
     @PutMapping("/{productID}")
     public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable UUID productID,
                                                             @RequestBody @Valid ProductUpdateDTO dto) {
