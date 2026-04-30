@@ -25,7 +25,7 @@ public class CategoryService {
 
     public CategoryResponseDTO getCategory(UUID categoryID){
         return categoryRepository.findById(categoryID)
-                .map(categoryMapper::toResponse)
+                .map(categoryMapper::createResponse)
                 .orElseThrow(() -> new CategoryNotFoundException(
                         "Couldn't find category with id: " + categoryID));
     }
@@ -33,7 +33,7 @@ public class CategoryService {
     public List<CategoryResponseDTO> getAllCategories() {
         return categoryRepository.findAll()
                 .stream()
-                .map(categoryMapper::toResponse)
+                .map(categoryMapper::createResponse)
                 .toList();
     }
 
@@ -43,7 +43,7 @@ public class CategoryService {
             throw new CategoryValidationException("The name General is reserved for system use.");
         }
 
-        Category savedCategory = categoryRepository.save(categoryMapper.createDTOToEntity(dto));
-        return categoryMapper.toResponse(savedCategory);
+        Category savedCategory = categoryRepository.save(categoryMapper.createEntity(dto));
+        return categoryMapper.createResponse(savedCategory);
     }
 }

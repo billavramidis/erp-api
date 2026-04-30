@@ -2,6 +2,7 @@ package com.bavramidis.erp.product.controller;
 
 import com.bavramidis.erp.product.dto.ProductCreateDTO;
 import com.bavramidis.erp.product.dto.ProductResponseDTO;
+import com.bavramidis.erp.product.dto.ProductUpdateDTO;
 import com.bavramidis.erp.product.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -53,6 +54,14 @@ public class ProductController {
     public ResponseEntity<ProductResponseDTO> updateProductCategory(@PathVariable UUID productID,
                                                                     @RequestBody UUID categoryID) {
         ProductResponseDTO response = productService.updateProductCategory(productID, categoryID);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{productID}")
+    public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable UUID productID,
+                                                            @RequestBody @Valid ProductUpdateDTO dto) {
+        ProductResponseDTO response = productService.updateProduct(productID, dto);
 
         return ResponseEntity.ok(response);
     }

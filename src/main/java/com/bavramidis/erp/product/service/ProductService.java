@@ -6,6 +6,7 @@ import com.bavramidis.erp.exceptions.category.CategoryNotFoundException;
 import com.bavramidis.erp.exceptions.product.ProductNotFoundException;
 import com.bavramidis.erp.product.dto.ProductCreateDTO;
 import com.bavramidis.erp.product.dto.ProductResponseDTO;
+import com.bavramidis.erp.product.dto.ProductUpdateDTO;
 import com.bavramidis.erp.product.entity.Product;
 import com.bavramidis.erp.product.mapper.ProductMapper;
 import com.bavramidis.erp.product.repository.ProductRepository;
@@ -30,7 +31,7 @@ public class ProductService {
 
     public ProductResponseDTO getProduct(UUID productID) {
         return productRepository.findById(productID)
-                .map(productMapper::toResponse)
+                .map(productMapper::createResponse)
                 .orElseThrow(() -> new ProductNotFoundException(
                         "Couldn't find product with id: " + productID));
     }
@@ -38,7 +39,7 @@ public class ProductService {
     public List<ProductResponseDTO> getAllProducts() {
         return productRepository.findAll()
                 .stream()
-                .map(productMapper::toResponse)
+                .map(productMapper::createResponse)
                 .toList();
     }
 
@@ -56,12 +57,12 @@ public class ProductService {
     }
 
     private ProductResponseDTO saveProduct(ProductCreateDTO dto, Category category) {
-        Product product = productMapper.createDTOToEntity(dto);
+        Product product = productMapper.createEntity(dto);
 
         product.setCategory(category);
 
         Product savedProduct = productRepository.save(product);
-        return productMapper.toResponse(savedProduct);
+        return productMapper.createResponse(savedProduct);
     }
 
     @Transactional
@@ -69,17 +70,33 @@ public class ProductService {
         Product product = productRepository.findById(productID)
                 .orElseThrow(() -> new ProductNotFoundException("Couldn't find product with id: " + productID));
 
-        Category category = categoryRepository.findById(categoryID)
-                .orElseThrow(() -> new CategoryNotFoundException("Couldn't find category with id: " + productID));
-
-        //If given the same category, it skips doing unnecessary db work.
-        if (product.getCategory().equals(category)) {
-            return productMapper.toResponse(productRepository.save(product));
-        }
-
-        product.setCategory(category);
+        //Prevents crashing if null is given.
+        Optional.ofNullable(categoryID)
+                .filter(id -> !id.equals(product.getCategory().getCategoryID()))
+                .map(id -> categoryRepository.findById(id)
+                        .orElseThrow(() -> new CategoryNotFoundException("ID: " + id)))
+                .ifPresent(product::setCategory);
 
         Product updatedProduct = productRepository.save(product);
-        return productMapper.toResponse(updatedProduct);
+        return productMapper.createResponse(updatedProduct);
+    }
+
+    @Transactional
+    public ProductResponseDTO updateProduct(UUID productID, ProductUpdateDTO dto) {
+        Product product = productRepository.findById(productID)
+                .orElseThrow(() -> new ProductNotFoundException("Couldn't find product with id: " + productID));
+
+        productMapper.updateEntity(product, dto);
+
+        //Generated through AI to my specifications. Took me like an hour to find a solution I was content with.
+        //Stops execution if the categoryID given was null and afterwards if it's a different category it updates the product.
+        Optional.ofNullable(dto.categoryID())
+                .filter(id -> !id.equals(product.getCategory().getCategoryID()))
+                .map(id -> categoryRepository.findById(id)
+                        .orElseThrow(() -> new CategoryNotFoundException("ID: " + id)))
+                .ifPresent(product::setCategory);
+
+        Product updatedProduct = productRepository.save(product);
+        return productMapper.createResponse(updatedProduct);
     }
 }
