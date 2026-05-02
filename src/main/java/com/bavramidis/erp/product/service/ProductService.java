@@ -59,10 +59,17 @@ public class ProductService {
     private ProductResponseDTO saveProduct(ProductCreateDTO dto, Category category) {
         Product product = productMapper.createEntity(dto);
 
+        String sku = createSku(product.getName());
+        product.setSku(sku);
+
         product.setCategory(category);
 
         Product savedProduct = productRepository.save(product);
         return productMapper.createResponse(savedProduct);
+    }
+
+    private String createSku(String productName){
+        return productName.substring(0, 3).toUpperCase() +  "-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase();
     }
 
     @Transactional
@@ -72,8 +79,6 @@ public class ProductService {
 
         productMapper.updateEntity(product, dto);
 
-        //Generated through AI to my specifications. Took me like an hour to find a solution I was content with.
-        //Stops execution if the categoryID given was null and afterwards if it's a different category it updates the product.
         Optional.ofNullable(dto.categoryID())
                 .filter(id -> !id.equals(product.getCategory().getCategoryID()))
                 .map(id -> categoryRepository.findById(id)
@@ -81,6 +86,7 @@ public class ProductService {
                 .ifPresent(product::setCategory);
 
         Product updatedProduct = productRepository.save(product);
+
         return productMapper.createResponse(updatedProduct);
     }
 }
