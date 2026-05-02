@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -39,9 +41,8 @@ public class Product {
     @Positive(message = "The price should be a positive number.")
     private BigDecimal price;
 
+    @Column(updatable = false)
     private String sku;
-
-    private String createdAt;
 
     @ManyToOne
     @JoinColumn(
@@ -52,11 +53,10 @@ public class Product {
     )
     private Category category;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now().toString();
-        if (this.sku == null) {
-            this.sku = (this.name.substring(0, 3).toUpperCase()) + "-" + createdAt;
-        }
-    }
+    @Column(updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }
