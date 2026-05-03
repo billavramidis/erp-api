@@ -37,7 +37,7 @@ public class ProductService {
     }
 
     public List<ProductResponseDTO> getAllProducts() {
-        return productRepository.findAll()
+        return productRepository.findAllWithCategory()
                 .stream()
                 .map(productMapper::createResponse)
                 .toList();

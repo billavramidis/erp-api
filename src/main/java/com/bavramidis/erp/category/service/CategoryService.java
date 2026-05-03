@@ -8,15 +8,10 @@ import com.bavramidis.erp.category.mapper.CategoryMapper;
 import com.bavramidis.erp.category.repository.CategoryRepository;
 import com.bavramidis.erp.exceptions.category.CategoryNotFoundException;
 import com.bavramidis.erp.exceptions.category.CategoryValidationException;
-import com.bavramidis.erp.exceptions.product.ProductNotFoundException;
-import com.bavramidis.erp.product.dto.ProductResponseDTO;
-import com.bavramidis.erp.product.dto.ProductUpdateDTO;
-import com.bavramidis.erp.product.entity.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
