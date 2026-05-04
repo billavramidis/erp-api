@@ -19,8 +19,8 @@ public class CategoryConfig {
     @Bean
     public CommandLineRunner createDefaultCategory(){
         return args -> {
-            if (!categoryRepository.existsByName("General")){
-                categoryRepository.save(new Category("General", "Default Category", BigDecimal.ZERO));
+            if (!categoryRepository.existsByName(Category.DEFAULT_CATEGORY_NAME)){
+                categoryRepository.save(new Category(Category.DEFAULT_CATEGORY_NAME, Category.DEFAULT_CATEGORY_DESCRIPTION, BigDecimal.ZERO));
             }
         };
     }

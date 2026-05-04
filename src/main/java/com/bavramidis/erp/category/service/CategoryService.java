@@ -40,7 +40,7 @@ public class CategoryService {
 
     @Transactional
     public CategoryResponseDTO createCategory(CategoryCreateDTO dto) {
-        if (dto.name().equalsIgnoreCase("General")){
+        if (dto.name().equalsIgnoreCase(Category.DEFAULT_CATEGORY_NAME)){
             throw new CategoryValidationException("The name General is reserved for system use.");
         }
 
@@ -50,8 +50,16 @@ public class CategoryService {
 
     @Transactional
     public CategoryResponseDTO updateCategory(UUID categoryID, CategoryUpdateDTO dto) {
+        if (dto.name().equalsIgnoreCase(Category.DEFAULT_CATEGORY_NAME)){
+            throw new CategoryValidationException("The name General is reserved for system use.");
+        }
+
         Category category = categoryRepository.findById(categoryID)
                 .orElseThrow(() -> new CategoryNotFoundException("Couldn't find category with id: " + categoryID));
+
+        if (category.getName().equalsIgnoreCase(Category.DEFAULT_CATEGORY_NAME)){
+            throw new CategoryValidationException("The General category cannot be modified.");
+        }
 
         categoryMapper.updateEntity(category, dto);
 

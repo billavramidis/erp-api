@@ -52,7 +52,7 @@ public class ProductService {
 
     @Transactional
     public ProductResponseDTO createProductWithoutCategory(ProductCreateDTO dto) {
-        return saveProduct(dto, categoryRepository.findByNameIgnoreCase("General")
+        return saveProduct(dto, categoryRepository.findByNameIgnoreCase(Category.DEFAULT_CATEGORY_NAME)
                 .orElseThrow(() -> new IllegalStateException("Critical Error: 'General' category missing.")));
     }
 
