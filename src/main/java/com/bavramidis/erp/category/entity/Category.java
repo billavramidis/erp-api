@@ -22,8 +22,8 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @RequiredArgsConstructor
 public class Category {
-    public static final String DEFAULT_CATEGORY_NAME = "Default";
-    public static final String DEFAULT_CATEGORY_DESCRIPTION = "Default Category";
+    public static final String DEFAULT_CATEGORY_NAME = "General";
+    public static final String DEFAULT_CATEGORY_DESCRIPTION = "General Category";
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
