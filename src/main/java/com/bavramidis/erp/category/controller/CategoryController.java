@@ -2,6 +2,7 @@ package com.bavramidis.erp.category.controller;
 
 import com.bavramidis.erp.category.dto.CategoryCreateDTO;
 import com.bavramidis.erp.category.dto.CategoryResponseDTO;
+import com.bavramidis.erp.category.dto.CategoryUpdateDTO;
 import com.bavramidis.erp.category.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -24,14 +25,14 @@ public class CategoryController {
     public ResponseEntity<List<CategoryResponseDTO>> getAllCategories(){
         List<CategoryResponseDTO> response = categoryService.getAllCategories();
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{categoryID}")
     public ResponseEntity<CategoryResponseDTO> getCategory(@PathVariable UUID categoryID){
         CategoryResponseDTO response = categoryService.getCategory(categoryID);
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping()
@@ -39,5 +40,22 @@ public class CategoryController {
         CategoryResponseDTO response = categoryService.createCategory(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PutMapping()
+    public ResponseEntity<CategoryResponseDTO> updateCategory(UUID categoryID,
+                                                              @RequestBody @Valid CategoryUpdateDTO dto){
+        CategoryResponseDTO response = categoryService.updateCategory(categoryID, dto);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping()
+    public ResponseEntity<String> deleteCategory(UUID categoryID){
+        categoryService.deleteCategory(categoryID);
+
+        String response = "Category with id: " + categoryID + "was deleted successfully";
+
+        return ResponseEntity.ok(response);
     }
 }
