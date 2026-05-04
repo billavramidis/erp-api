@@ -49,4 +49,13 @@ public class CategoryController {
 
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping()
+    public ResponseEntity<String> deleteCategory(UUID categoryID){
+        categoryService.deleteCategory(categoryID);
+
+        String response = "Category with id: " + categoryID + "was deleted successfully";
+
+        return ResponseEntity.ok(response);
+    }
 }
