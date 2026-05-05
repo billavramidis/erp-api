@@ -1,7 +1,6 @@
 package com.bavramidis.erp.warehouse.service;
 
 import com.bavramidis.erp.warehouse.dto.WarehouseResponseDTO;
-import com.bavramidis.erp.warehouse.entity.Warehouse;
 import com.bavramidis.erp.warehouse.mapper.WarehouseMapper;
 import com.bavramidis.erp.warehouse.repository.WarehouseRepository;
 import lombok.RequiredArgsConstructor;
