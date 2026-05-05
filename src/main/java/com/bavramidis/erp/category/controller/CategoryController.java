@@ -5,6 +5,7 @@ import com.bavramidis.erp.category.dto.CategoryResponseDTO;
 import com.bavramidis.erp.category.dto.CategoryUpdateDTO;
 import com.bavramidis.erp.category.service.CategoryService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,12 +15,9 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/category")
+@RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
-
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
 
     @GetMapping("/all")
     public ResponseEntity<List<CategoryResponseDTO>> getAllCategories(){

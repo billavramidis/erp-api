@@ -10,6 +10,7 @@ import com.bavramidis.erp.product.dto.ProductUpdateDTO;
 import com.bavramidis.erp.product.entity.Product;
 import com.bavramidis.erp.product.mapper.ProductMapper;
 import com.bavramidis.erp.product.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,16 +19,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductMapper productMapper;
-
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, ProductMapper productMapper) {
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-        this.productMapper = productMapper;
-    }
 
     public ProductResponseDTO getProduct(UUID productID) {
         return productRepository.findById(productID)

@@ -9,6 +9,7 @@ import com.bavramidis.erp.category.repository.CategoryRepository;
 import com.bavramidis.erp.exceptions.category.CategoryNotFoundException;
 import com.bavramidis.erp.exceptions.category.CategoryValidationException;
 import com.bavramidis.erp.product.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,16 +17,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
     private final ProductRepository productRepository;
-
-    public CategoryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper, ProductRepository productRepository) {
-        this.categoryRepository = categoryRepository;
-        this.categoryMapper = categoryMapper;
-        this.productRepository = productRepository;
-    }
 
     public CategoryResponseDTO getCategory(UUID categoryID) {
         return categoryRepository.findById(categoryID)
