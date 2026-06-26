@@ -5,6 +5,7 @@ import com.bavramidis.erp.product.dto.ProductResponseDTO;
 import com.bavramidis.erp.product.dto.ProductUpdateDTO;
 import com.bavramidis.erp.product.service.ProductService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,12 +15,9 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/product")
+@RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
-
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
 
     @GetMapping("/{productID}")
     public ResponseEntity<ProductResponseDTO> getProduct(@PathVariable UUID productID) {
